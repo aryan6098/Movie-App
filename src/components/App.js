@@ -1,10 +1,28 @@
 
-import React from 'react';
+import React, { Component } from 'react';
 import {data} from '../data';
 import Navbar from './Navbar'
 import MovieCard from './MovieCard';
-function App() {
-  return (
+import { addMovies } from '../actions';
+
+class App extends React.Component {
+  componentDidMount()
+  {
+    const {store} =this.props;
+    store.subscribe(() =>{
+      console.log('UPDATED');
+      this.forceUpdate();
+    })
+   // make api call 
+   // dispatch action 
+   store.dispatch(addMovies(data));
+  console.log('STATE',this.props.store.getState());
+  }
+  render()
+  {
+    const { list } = this.props.store.getState();
+    console.log('RENDER',this.props.store.getState());
+    return (
     <div className="App">
       <Navbar />
       <div className="main">
@@ -13,13 +31,14 @@ function App() {
           <div className="tab">Favourites</div> 
           </div>
         <div className="list">
-          {data.map(movie =>(
-            <MovieCard movie={movie} />
-          ))}
+          {list.map((movie,index) =>(
+            <MovieCard movie={movie} key={'movies-${index}'} />
+          ))};
         </div> 
       </div>
     </div>
-  );
+    );
+  }
 }
 
 export default App;
